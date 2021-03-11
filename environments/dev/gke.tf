@@ -1,5 +1,6 @@
 # GKE cluster
 resource "google_container_cluster" "primary" {
+  provider = google-beta
   name     = "${var.project_id}-${var.member_id}-${var.environment}"
   location = var.region
   node_locations = var.zones
@@ -9,6 +10,13 @@ resource "google_container_cluster" "primary" {
 
   network    = google_compute_network.vpc.name
   subnetwork = google_compute_subnetwork.subnet.name
+
+  addons_config {
+    istio_config {
+      disabled = false
+      auth     = "AUTH_MUTUAL_TLS"
+    }
+  }
 
   master_auth {
     username = var.gke_username
@@ -50,7 +58,11 @@ resource "google_container_node_pool" "primary_nodes" {
 
 resource "kubernetes_namespace" "eshop-dev" {
  
-  metadata {
-    name = "eshop-dev"
-  }
+    metadata {
+        annotations      = {}
+        labels           = {
+          istio-injection = "enabled"
+        }
+        name             = "eshop-dev"
+    }
 }
