@@ -75,13 +75,13 @@ resource "google_container_node_pool" "primary_nodes" {
   }
 }
 
-resource "kubernetes_namespace" "eshop-prod" {
+resource "kubernetes_namespace" "eshop-app {
  
   metadata {
     annotations      = {}
     labels           = {
       istio-injection = "enabled"
     }      
-    name = "eshop-prod"
+    name = "eshop-app"
   }
 }
